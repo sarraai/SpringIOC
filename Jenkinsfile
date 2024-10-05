@@ -7,7 +7,7 @@ pipeline {
         stage('Git') {
             steps {
                 // Checkout the Git repo
-                git url: 'https://github.com/Khaled-Chaabouni/SpringAOP.git', branch: 'main'
+                git url: 'https://github.com/sarraai/SpringAOP.git', branch: 'main'
             }
         }
         stage('Maven Build') {
