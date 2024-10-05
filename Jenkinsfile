@@ -1,30 +1,43 @@
 pipeline {
-    agent any 
+    agent any
+    
+    tools {
+        // Ensure Maven is installed and configured in Jenkins
+        maven 'M2_HOME'  
+    }
     
     stages {
-        stage('Checkout') {
+        stage('Git Checkout') {
             steps {
-                // Checkout code from SCM
-                git url: 'https://github.com/sarraai/SpringIOC', credentialsId: 'your-credentials-id'
+                // Checkout the Git repo
+                git url: 'https://github.com/sarraai/SpringAOP.git', branch: 'main'
             }
         }
-        stage('Build') {
+        
+        stage('Maven Build') {
             steps {
-                // Run your build commands here
-                sh 'mvn clean package'
+                // Build the project using Maven
+                sh 'mvn clean install'
             }
         }
-        stage('Test') {
+        
+        stage('Maven Test') {
             steps {
-                // Run your tests
+                // Run tests using Maven
                 sh 'mvn test'
             }
         }
-        stage('Deploy') {
-            steps {
-                // Deploy your application
-                sh 'echo "Deploying application..."'
-            }
+    }
+    
+    post {
+        always {
+            // Archive results even if build fails
+            archiveArtifacts artifacts: 'target/*.jar', allowEmptyArchive: true
+            junit 'target/surefire-reports/*.xml'  // Corrected path to ensure proper matching
         }
+    }
+    
+    options {
+        timestamps()  // To show time details
     }
 }
